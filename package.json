@@ -1,0 +1,14 @@
+{
+  "name": "trekgear-hub",
+  "version": "1.0.0",
+  "description": "Beginner-level Express and SQLite backend for trekking gear rentals",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "sqlite3": "^5.1.7"
+  }
+}

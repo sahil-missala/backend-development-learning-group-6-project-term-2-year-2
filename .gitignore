@@ -1,0 +1,4 @@
+node_modules/
+trekgear.db
+*.log
+.env

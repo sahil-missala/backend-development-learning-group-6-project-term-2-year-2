@@ -1,0 +1,133 @@
+{
+  "info": {
+    "name": "TrekGear Hub API",
+    "description": "Basic API requests for testing TrekGear Hub locally.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Welcome",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/"
+      }
+    },
+    {
+      "name": "Add Trekker",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Aarav\",\n  \"email\": \"aarav@example.com\"\n}"
+        },
+        "url": "http://localhost:3000/trekkers"
+      }
+    },
+    {
+      "name": "Get Trekkers",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/trekkers"
+      }
+    },
+    {
+      "name": "Add Tent",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Mountain Explorer\",\n  \"size\": \"2-person\"\n}"
+        },
+        "url": "http://localhost:3000/tents"
+      }
+    },
+    {
+      "name": "Get Tents",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/tents"
+      }
+    },
+    {
+      "name": "Get Tents by Size",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/tents?size=2-person"
+      }
+    },
+    {
+      "name": "Get Top Three Tents",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/tents/top"
+      }
+    },
+    {
+      "name": "Create Rental",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"trekker_id\": 1,\n  \"tent_id\": 1,\n  \"rental_date\": \"2026-11-14\"\n}"
+        },
+        "url": "http://localhost:3000/rentals"
+      }
+    },
+    {
+      "name": "Get Rentals with Names",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/rentals"
+      }
+    },
+    {
+      "name": "Update Tent",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Mountain Explorer XL\",\n  \"size\": \"4-person\"\n}"
+        },
+        "url": "http://localhost:3000/tents/1"
+      }
+    },
+    {
+      "name": "Return Rental",
+      "request": {
+        "method": "PUT",
+        "url": "http://localhost:3000/rentals/1/return"
+      }
+    },
+    {
+      "name": "Delete Tent",
+      "request": {
+        "method": "DELETE",
+        "url": "http://localhost:3000/tents/1"
+      }
+    }
+  ]
+}
