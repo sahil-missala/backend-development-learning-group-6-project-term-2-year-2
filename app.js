@@ -63,7 +63,7 @@ app.post("/trekkers", (request, response) => {
     );
 });
 
-// ---------------- TENT ROUTES ----------------
+// ---------------- TENT ROUTES (Role 3: Nunna Gajula Mokshith Sai) ----------------
 
 // Top three tents must be declared before /tents/:id
 app.get("/tents/top", (request, response) => {
@@ -106,7 +106,7 @@ app.get("/tents", (request, response) => {
     });
 });
 
-// Get one tent
+// Get one tent by ID
 app.get("/tents/:id", (request, response) => {
     db.get("SELECT * FROM tents WHERE id = ?", [request.params.id], (error, row) => {
         if (error) {
@@ -121,15 +121,19 @@ app.get("/tents/:id", (request, response) => {
 
 // Add a tent
 app.post("/tents", (request, response) => {
-    const { name, size } = request.body;
+    const { name, size, status } = request.body;
 
-    if (!name || !size) {
+    if (!name || !size || typeof name !== "string" || typeof size !== "string" || !name.trim() || !size.trim()) {
         return response.status(400).json({ error: "Tent name and size are required" });
     }
 
+    const tentName = name.trim();
+    const tentSize = size.trim();
+    const tentStatus = (status && typeof status === "string" && status.trim()) ? status.trim() : "available";
+
     db.run(
-        "INSERT INTO tents (name, size) VALUES (?, ?)",
-        [name, size],
+        "INSERT INTO tents (name, size, status) VALUES (?, ?, ?)",
+        [tentName, tentSize, tentStatus],
         function (error) {
             if (error) {
                 return response.status(500).json({ error: error.message });
@@ -145,25 +149,35 @@ app.post("/tents", (request, response) => {
 
 // Update a tent
 app.put("/tents/:id", (request, response) => {
-    const { name, size } = request.body;
+    const { name, size, status } = request.body;
 
-    if (!name || !size) {
+    if (!name || !size || typeof name !== "string" || typeof size !== "string" || !name.trim() || !size.trim()) {
         return response.status(400).json({ error: "Tent name and size are required" });
     }
 
-    db.run(
-        "UPDATE tents SET name = ?, size = ? WHERE id = ?",
-        [name, size, request.params.id],
-        function (error) {
-            if (error) {
-                return response.status(500).json({ error: error.message });
-            }
-            if (this.changes === 0) {
-                return response.status(404).json({ error: "Tent not found" });
-            }
-            response.status(200).json({ message: "Tent updated successfully" });
+    const tentName = name.trim();
+    const tentSize = size.trim();
+
+    let sql = "UPDATE tents SET name = ?, size = ?";
+    let params = [tentName, tentSize];
+
+    if (status && typeof status === "string" && status.trim()) {
+        sql += ", status = ?";
+        params.push(status.trim());
+    }
+
+    sql += " WHERE id = ?";
+    params.push(request.params.id);
+
+    db.run(sql, params, function (error) {
+        if (error) {
+            return response.status(500).json({ error: error.message });
         }
-    );
+        if (this.changes === 0) {
+            return response.status(404).json({ error: "Tent not found" });
+        }
+        response.status(200).json({ message: "Tent updated successfully" });
+    });
 });
 
 // Delete a tent
@@ -184,7 +198,7 @@ app.delete("/tents/:id", (request, response) => {
     });
 });
 
-// ---------------- RENTAL ROUTES ----------------
+// ---------------- RENTAL ROUTES (Role 3: Nunna Gajula Mokshith Sai) ----------------
 
 // Get rentals with trekker and tent names using JOIN
 app.get("/rentals", (request, response) => {
@@ -203,6 +217,29 @@ app.get("/rentals", (request, response) => {
             return response.status(500).json({ error: error.message });
         }
         response.status(200).json(rows);
+    });
+});
+
+// Get one rental by ID
+app.get("/rentals/:id", (request, response) => {
+    const sql = `
+        SELECT rentals.id, trekkers.name AS trekker_name,
+               tents.name AS tent_name, rentals.rental_date,
+               rentals.returned
+        FROM rentals
+        INNER JOIN trekkers ON rentals.trekker_id = trekkers.id
+        INNER JOIN tents ON rentals.tent_id = tents.id
+        WHERE rentals.id = ?
+    `;
+
+    db.get(sql, [request.params.id], (error, row) => {
+        if (error) {
+            return response.status(500).json({ error: error.message });
+        }
+        if (!row) {
+            return response.status(404).json({ error: "Rental not found" });
+        }
+        response.status(200).json(row);
     });
 });
 
